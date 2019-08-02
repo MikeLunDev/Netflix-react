@@ -3,9 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "bootstrap": "^4.3.1",
+    "perf_hooks": "0.0.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "react-scripts": "3.0.1"
+    "react-fake-loading": "0.0.1",
+    "react-loading": "^2.0.3",
+    "react-scripts": "3.0.1",
+    "react-slick": "^0.24.0",
+    "reactstrap": "^8.0.1",
+    "slick-carousel": "^1.8.1"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -27,5 +34,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "react-alice-carousel": "^1.15.2"
   }
 }

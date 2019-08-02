@@ -5,9 +5,25 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  background-color: #221f1f;
+  color: white;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+.slick-prev {
+  left: 1% !important;
+  z-index: 1;
+ 
+}
+
+.slick-next {
+  right: 2% !important;
+  z-index: 1;
+  font-size: 40px !important;
 }
