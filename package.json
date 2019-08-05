@@ -8,6 +8,7 @@
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-fake-loading": "0.0.1",
+    "react-icons": "^3.7.0",
     "react-loading": "^2.0.3",
     "react-scripts": "3.0.1",
     "react-slick": "^0.24.0",

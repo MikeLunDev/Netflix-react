@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import Slider from "react-slick";
-import { Alert,Badge } from "reactstrap";
+import { Alert,Badge,Button } from "reactstrap";
 
 export default class ResponsiveCarousel extends Component {
   constructor(props) {
@@ -14,17 +14,16 @@ export default class ResponsiveCarousel extends Component {
   }
 
   componentDidMount = async () => {
-    console.log("ho ricevuto", this.props.search);
     try {
       var response = await fetch(this.state.url + this.props.search);
       var json = await response.json();
       if (response.ok) {
-       var onlyMovies = json.Search.filter((film => film.Type === "movie"))
+      
+       var onlyMovies = json.Search === undefined ? null : json.Search.filter((film => film.Type === "movie"));
           this.setState({
             errMess: undefined,
             searchResults: onlyMovies
           });
-      
       } else {
         this.setState({
           errMess: json.Error,
@@ -83,6 +82,7 @@ export default class ResponsiveCarousel extends Component {
             <h5>Thanks for your patience, we hope to see you again!</h5>
             </Alert>
         )}
+       
         {this.state.searchResults !== null && this.state.errMess === undefined && (
           <div className="container-fluid">
             <h2 className="py-2"> {this.props.search}</h2>
@@ -95,8 +95,10 @@ export default class ResponsiveCarousel extends Component {
                     src={movie.Poster}
                     alt={movie.Title}
                   />
+                     <Button onClick={()=>this.props.onShowComments(movie)} style={{width:"97%"}} >Show Comments</Button>
                 </div>
               ))}
+           
             </Slider>
           </div>
         )}

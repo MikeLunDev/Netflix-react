@@ -5,6 +5,8 @@ import ReactLoading from "react-loading";
 import { InputGroup, InputGroupAddon, Button, Input } from "reactstrap";
 import searchIcon from '../assets/imgs/search.png'
 import MovieSearch from './MovieSearched'
+import ShowComments from "./ShowComments";
+import {IoMdBackspace} from "react-icons/io";
 
 export default class MainComponent extends Component {
   constructor(props) {
@@ -16,7 +18,8 @@ export default class MainComponent extends Component {
       searchWord: "",
       isSearching:false,
       searchResult: null,
-      errMess: ""
+      errMess: "",
+      selectedMovie: null
     };
   }
 
@@ -26,7 +29,7 @@ export default class MainComponent extends Component {
         this.setState({
           isLoading: true
         }),
-      3000
+      2500
     );
     clearTimeout();
   };
@@ -40,16 +43,19 @@ export default class MainComponent extends Component {
         var response = await fetch(this.state.url + this.state.searchWord);
         var json = await response.json();
         if (response.ok) {
-          var onlyMovies = json.Search.filter(film => film.Type === "movie");
+            var onlyMovies = json.Search === undefined ? null : json.Search.filter((film => film.Type === "movie"));
           setTimeout(() => {
             this.setState({
               errMess: "",
-              searchResult: onlyMovies
+              searchResult: onlyMovies,
+              isSearching:false
             });
           }, 2500);
+          clearTimeout();
         } else {
           this.setState({
             errMess: json.Error,
+            isSearching: false
           });
         }
       } catch (ex) {
@@ -62,6 +68,18 @@ export default class MainComponent extends Component {
       searchWord: input.currentTarget.value
     });
   };
+
+
+  handleShowComments = (movie)=>{
+   this.setState({selectedMovie: movie})
+  }
+
+ handleBack = ()=>{
+   this.setState({
+    selectedMovie: null
+   })
+ }
+
 
   render() {
     return (
@@ -95,19 +113,35 @@ export default class MainComponent extends Component {
           <br/>
           </div>
         )}
-        {this.state.isLoading && this.state.isSearching && (
-          <MovieSearch searched={this.state.searchResult} searchInput={this.state.searchWord}/>
+
+        {/* SHOWSEARCH */}
+        {this.state.isLoading && this.state.isSearching &&(
+          <MovieSearch searched={this.state.searchResult} searching={this.state.isSearching}/>
         )}
+         
 
-
+         {/* SHOW COMMENTS */}
+        {this.state.isLoading && this.state.selectedMovie && (
+         
+          <div className="row">
+          <div className="col-12 pl-5 ml-5">
+          <Button className="bg-dark" onClick={this.handleBack}><IoMdBackspace/> Go Back</Button>
+          </div>
+          <div className="col-12">
+          <ShowComments movie={this.state.selectedMovie}/>
+          </div>
+          </div>
+          
+        )}
+        
         {/* DEFAULT HOMEPAGE */}
         {this.state.isLoading && (
           <>
-            <ResponsiveCarousel search="Star wars" />
+            <ResponsiveCarousel onShowComments={this.handleShowComments} search="Star wars" />
             <br />
-            <ResponsiveCarousel search="007" />
+            <ResponsiveCarousel onShowComments={this.handleShowComments} search="007" />
             <br />
-            <ResponsiveCarousel search="Indiana jones" />
+            <ResponsiveCarousel onShowComments={this.handleShowComments} search="Indiana jones" />
             <br />
             <br/>
           </>

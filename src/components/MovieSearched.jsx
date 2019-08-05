@@ -14,8 +14,6 @@ export default class MovieSearch extends Component {
     };
   }
 
-  
-
   render() {
     var settings = {
       dots: false,
@@ -70,24 +68,32 @@ export default class MovieSearch extends Component {
             <h5>Thanks for your patience, we hope to see you again!</h5>
           </Alert>
         )}
-        {!this.props.searched && this.state.errMess === undefined && (
-            <>
-          <div className="container d-flex justify-content-center">
-              <br/>
-              <br/>
-            <ReactLoading
-              type="bars"
-              color="#fff"
-              width={150}
-              className="mt-5"
-            />
-             <br/>
-              
-          </div>
-           <br/>
-           <br/>
-           </>
+        {this.props.isSearching && (
+          <>
+            <div className="container d-flex justify-content-center">
+              <br />
+              <br />
+              <ReactLoading
+                type="bars"
+                color="#fff"
+                width={150}
+                className="mt-5"
+              />
+              <br />
+            </div>
+            <br />
+            <br />
+          </>
         )}
+
+        {this.props.searched === null && (
+          <div className="container-fluid text-center">
+            <h2>
+              Il film che cercavi non esiste o non è presente in archivio.
+            </h2>
+          </div>
+        )}
+
         {this.props.searched && this.state.errMess === undefined && (
           <div className="container-fluid">
             <h2> Results for "{this.props.searchInput}" </h2>
