@@ -1,14 +1,17 @@
 import React, { Component } from "react";
 import ReactLoading from "react-loading";
 import MediaComment from "./MediaComment";
-import AddComment from "./AddComment"
+import AddComment from "./AddComment";
+import { ListGroup, ListGroupItem, Badge } from "reactstrap";
 
 export default class ShowComments extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      urlForDetail: "http://www.omdbapi.com/?apikey=1802dfa8&i=",
       comments: null,
+      detailSearchResults: null,
       isLoading: true,
       errMess: "",
       credentials: {
@@ -22,11 +25,19 @@ export default class ShowComments extends Component {
   }
 
   componentDidMount = async () => {
-    await this.fetchData(this.props.movie.imdbID);
+    /* let [a, c] = await Promise.all([
+      this.fetchDataMovie(this.props.movieId),
+      this.fetchComments(this.props.movieId)
+  ]); */
+  
+  console.log(this.props.movieId);
+  await  this.fetchDataMovie(this.props.movieId); 
+  await this.fetchComments(this.props.movieId); 
   };
 
-  fetchData = async id => {
+  fetchComments = async id => {
     try {
+      console.log(this.props.movieId)
       var response = await fetch(
         "https://strive-school-testing-apis.herokuapp.com/api/comments/" + id,
         {
@@ -37,13 +48,14 @@ export default class ShowComments extends Component {
         }
       );
       var json = await response.json();
+    
       if (response.ok) {
-        setTimeout(()=>this.setState({
+       
+        this.setState({
           comments: json,
-          isLoading: false,
-          errMess: ""
-        }),1500);
-        clearTimeout();
+          errMess: "",
+          isLoading: false
+        });
       } else {
         this.setState({
           errMess: json.message,
@@ -55,12 +67,35 @@ export default class ShowComments extends Component {
     }
   };
 
-  componentDidUpdate(prevProps) {
-   
-    if (this.props.movie !== prevProps.movie) {
-      this.fetchData(this.props.movie.imdbID);
+  fetchDataMovie = async id => {
+    try {
+      var response = await fetch(this.state.urlForDetail + id);
+      var json = await response.json();
+      if (response.ok) {
+        console.log(json);
+        setTimeout(() =>
+          this.setState({
+            errMess: undefined,
+            detailSearchResults: json,
+            isLoading: false,
+            errMess: ""
+          }), 1500);
+      } else {
+        this.setState({
+          errMess: json.Error
+        });
+      }
+    } catch (ex) {
+      console.log("the real error is", ex);
     }
-  }
+  };
+
+  /* componentDidUpdate(prevProps) {
+    if (this.props.movieId !== prevProps.movieId) {
+      this.fetchData(this.props.movieId);
+      this.fetchDataMovie(this.props.movieId);
+    }
+  } */
 
   render() {
     return (
@@ -68,34 +103,70 @@ export default class ShowComments extends Component {
         {this.state.isLoading && (
           <div className="container d-flex justify-content-center my-5">
             <div className="row">
-            <div className="col-12">
-            Searching for Comments...
-            <ReactLoading
-              type="bars"
-              color="#fff"
-              width={130}
-              className=""
-            />
-          </div>
-          </div>
+              <div className="col-12">
+                Loading...
+                <ReactLoading
+                  type="bars"
+                  color="#fff"
+                  width={130}
+                  className=""
+                />
+              </div>
+            </div>
           </div>
         )}
-        {!this.state.isLoading &&
-          this.state.errMess === "" && (
-            <div className="container">
-            <div className="row">
-            <div className="col-md-4">
-              <img src={this.props.movie.Poster}/>
+        {!this.state.isLoading && this.state.errMess === "" && (
+          <div className="container">
+            <div className="row no-gutters">
+              <div className="col-md-4">
+                <img src={this.state.detailSearchResults.Poster} />
+              </div>
+              <div className="col-md-8" style={{ maxHeight: "480px" }}>
+                <ListGroup className="text-white">
+                  <ListGroupItem className="bg-dark">
+                    <h4>
+                      <Badge color="info">Genre:</Badge>{" "}
+                    </h4>
+                    {this.state.detailSearchResults.Genre}
+                  </ListGroupItem>
+                  <ListGroupItem className="bg-dark">
+                    <h4>
+                      <Badge color="info">Actors:</Badge>{" "}
+                    </h4>
+                    {this.state.detailSearchResults.Actors}
+                  </ListGroupItem>
+                  <ListGroupItem className="bg-dark">
+                    <h4>
+                      <Badge color="info">Director:</Badge>{" "}
+                    </h4>
+                    {this.state.detailSearchResults.Director}
+                  </ListGroupItem>
+                  <ListGroupItem className="bg-dark">
+                    <h4>
+                      <Badge color="info">BoxOffice:</Badge>{" "}
+                    </h4>
+                    {this.state.detailSearchResults.BoxOffice}
+                  </ListGroupItem>
+                  <ListGroupItem className="bg-dark">
+                    <h4>
+                      <Badge color="info">Plot:</Badge>{" "}
+                    </h4>
+                    {this.state.detailSearchResults.Plot}
+                  </ListGroupItem>
+                </ListGroup>
+              </div>
+              <div className="col-12 text-center">
+                {/*  <AddComment className="mb-4" movieId={this.props.movieId} /> */}
+                <h4 className="py-5">Comment Section</h4>
+                {this.state.comments.map((singleComment, index) => {
+                  return (
+                    <MediaComment key={index} commentObj={singleComment} />
+                  );
+                })}
+              </div>
             </div>
-            <div className="col-md-8" style={{overflowY:"scroll", maxHeight:"480px"}}>
-              <AddComment className="mb-4" movie={this.props.movie}/>
-              {this.state.comments.map((singleComment, index) => {
-                return <MediaComment key={index} commentObj={singleComment} />;
-              })}
-            </div>
-            </div>
-            </div>
-          )}
+          </div>
+        )}
       </>
     );
   }

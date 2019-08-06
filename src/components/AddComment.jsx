@@ -30,10 +30,10 @@ class AddComments extends Component {
   }
 
 componentDidMount = ()=>{
-  console.log("i've received the id movie of",this.props.movie.imdbID)
+  console.log("on mount i've received the id movie of",this.props.movieId)
   this.setState({
     singleComment: {
-      elementId: this.props.movie.imdbID,
+      elementId: this.props.movieId,
       comment: "",
       rate: 2
     }
@@ -41,18 +41,18 @@ componentDidMount = ()=>{
 }
   
 componentDidUpdate = (prevProps)=>{
-  console.log("on update i've received the id movie of",this.props.movie.imdbID)
+  console.log("on update i've received the id movie of",this.props.movieId)
     if (this.props.movie !== prevProps.movie) {
         this.setState({
           singleComment:{
-          elementId: this.props.movie.imdbID,
+          elementId: this.props.movieId,
           comment: "",
           rate: 2
           }
         })
       }
 
-    console.log("new state is", this.state.singleComment)
+   
 }
 
   handleChange = input => {
@@ -101,6 +101,8 @@ componentDidUpdate = (prevProps)=>{
       console.log("the real error is", ex);
     }
   };
+
+  
   render() {
     return (
         <>

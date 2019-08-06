@@ -13,6 +13,7 @@ import logo from "../assets/imgs/logo.png";
 import bell from "../assets/imgs/bell.png";
 import search from "../assets/imgs/search.png";
 import prof from "../assets/imgs/prof.png";
+import {Link} from "react-router-dom";
 
 export default class NetflixNavbar extends React.Component {
   constructor(props) {
@@ -38,9 +39,9 @@ export default class NetflixNavbar extends React.Component {
           <Collapse isOpen={this.state.isOpen} navbar>
             <Nav className="ml-auto" navbar>
             <NavItem>
-                <NavLink className="pt-3" href="https://github.com/reactstrap/reactstrap">
-                  <img src={search} alt="search icon" width="30px" height="auto" />
-                </NavLink>
+                <Link to="/search" className="pt-3 nav-link">
+                  <img to="/search" src={search} alt="search icon" width="30px" height="auto" />
+                </Link>
               </NavItem>
               <NavItem>
                 <NavLink className="pt-3" href="https://github.com/reactstrap/reactstrap">

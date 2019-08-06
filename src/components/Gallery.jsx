@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Slider from "react-slick";
 import { Alert,Badge,Button } from "reactstrap";
+import {Link} from "react-router-dom"
 
 export default class ResponsiveCarousel extends Component {
   constructor(props) {
@@ -95,7 +96,7 @@ export default class ResponsiveCarousel extends Component {
                     src={movie.Poster}
                     alt={movie.Title}
                   />
-                     <Button onClick={()=>this.props.onShowComments(movie)} style={{width:"97%"}} >Show Comments</Button>
+                     <Button style={{width:"97%"}}><Link className="nav-link text-white" to={"/moviedetails/" + movie.imdbID}> Show Details</Link></Button>
                 </div>
               ))}
            
