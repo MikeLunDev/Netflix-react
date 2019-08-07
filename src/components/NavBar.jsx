@@ -39,10 +39,16 @@ export default class NetflixNavbar extends React.Component {
           <Collapse isOpen={this.state.isOpen} navbar>
             <Nav className="ml-auto" navbar>
             <NavItem>
+                <Link to="/registration" className="pt-3 nav-link">
+                  Register
+                </Link>
+              </NavItem>
+            <NavItem>
                 <Link to="/search" className="pt-3 nav-link">
                   <img to="/search" src={search} alt="search icon" width="30px" height="auto" />
                 </Link>
               </NavItem>
+             
               <NavItem>
                 <NavLink className="pt-3" href="https://github.com/reactstrap/reactstrap">
                   <img src={bell} alt="bell" width="30px" height="auto" />

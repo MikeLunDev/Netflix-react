@@ -8,6 +8,7 @@ import MovieSearch from "./MovieSearched";
 
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import MovieDetail from "./MovieDetail"
+import RegistrationPage from "./RegistrationPage";
 
 export default class MainComponent extends Component {
   constructor(props) {
@@ -85,7 +86,7 @@ export default class MainComponent extends Component {
         <br />
         <br />
         <br />
-
+        <Route path="/registration" exact component={RegistrationPage}/>
         <Route
           path="/"
           exact
