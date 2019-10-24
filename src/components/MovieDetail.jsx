@@ -9,8 +9,7 @@ export default class MovieDetail extends Component {
     super(props);
 
     this.state = {
-      selectedMovieId: null,
-
+      selectedMovieId: null
     };
   }
 
@@ -20,31 +19,28 @@ export default class MovieDetail extends Component {
     });
   };
 
-  componentDidUpdate = (prevProps,prevState)=>{
-    if (this.state.selectedMovieId !== prevState.selectedMovieId) {
-      }
-  }
-
   render() {
     return (
       <>
-       {this.state.selectedMovieId && (
-        <div className="container py-5">
-        <Button className="bg-dark" style={{position:"absolute", top:"10%", left:0}}>
-          <Link className="nav-link text-white" to="/">
-            {" "}
-            <IoMdBackspace /> Go Back
-          </Link>
-        </Button>
-        <div className="row py-5">
-          <div className="col-12">
-            <ShowComments movieId={this.state.selectedMovieId} />
+        {this.state.selectedMovieId && (
+          <div className="container">
+            <Button
+              className="bg-dark"
+              style={{ position: "absolute", top: "10%", left: 0 }}
+            >
+              <Link className="nav-link text-white" to="/">
+                {" "}
+                <IoMdBackspace /> Go Back
+              </Link>
+            </Button>
+            <div className="row">
+              <div className="col-12">
+                <ShowComments movieId={this.state.selectedMovieId} />
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-       )}
-       </>
-     
+        )}
+      </>
     );
   }
 }

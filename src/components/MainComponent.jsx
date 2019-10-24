@@ -1,13 +1,13 @@
 import React, { Component } from "react";
-import ResponsiveCarousel from "./Gallery";
+import ResponsiveCarousel from "./ResponsiveCarousel";
 import NetflixNavbar from "./NavBar";
 import ReactLoading from "react-loading";
 import { InputGroup, InputGroupAddon, Button, Input } from "reactstrap";
 import searchIcon from "../assets/imgs/search.png";
 import MovieSearch from "./MovieSearched";
-
-import { BrowserRouter as Router, Route } from "react-router-dom";
-import MovieDetail from "./MovieDetail"
+import LoginPage from "./LoginPage";
+import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
+import MovieDetail from "./MovieDetail";
 import RegistrationPage from "./RegistrationPage";
 
 export default class MainComponent extends Component {
@@ -21,11 +21,12 @@ export default class MainComponent extends Component {
       isSearching: false,
       searchResult: null,
       errMess: "",
-      selectedMovie: null
+      selectedMovie: null,
+      redirectToLogin: false
     };
   }
 
-  componentDidMount = () => {
+  componentDidMount = async () => {
     setTimeout(
       () =>
         this.setState({
@@ -34,6 +35,20 @@ export default class MainComponent extends Component {
       2500
     );
     clearTimeout();
+    var token = localStorage.getItem("token");
+    if (token) {
+      var res = await fetch("http://localhost:3055/user/refresh", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token
+        },
+        method: "POST"
+      });
+      if (res.ok) {
+        var json = await res.json();
+        localStorage.setItem("token", json.token);
+      } else this.setState({ errMess: res.message });
+    } else this.setState({ redirectToLogin: true });
   };
 
   handleSearch = async e => {
@@ -78,7 +93,6 @@ export default class MainComponent extends Component {
     this.setState({ selectedMovieId: movie.imbdID });
   };
 
-
   render() {
     return (
       <Router>
@@ -86,7 +100,9 @@ export default class MainComponent extends Component {
         <br />
         <br />
         <br />
-        <Route path="/registration" exact component={RegistrationPage}/>
+        {this.state.redirectToLogin && <Redirect to="/login" />}
+        <Route path="/registration" exact component={RegistrationPage} />
+        <Route path="/login" exact component={LoginPage} />
         <Route
           path="/"
           exact
@@ -103,7 +119,7 @@ export default class MainComponent extends Component {
                     />
                   </div>
                 )}
-                
+
                 {this.state.isLoading && (
                   <>
                     <ResponsiveCarousel
@@ -129,33 +145,37 @@ export default class MainComponent extends Component {
           }}
         />
 
-        
-       <Route path="/search" exact render={()=>{
-         return( <div className="container text-center">
-            <h2>Search for a movie</h2>
-            <InputGroup>
-              <InputGroupAddon addonType="prepend">
-                <Button onClick={this.handleSearch} className="py-0">
-                  <img
-                    className="p-0"
-                    width="35"
-                    height="35px"
-                    src={searchIcon}
-                    alt="search icon"
+        <Route
+          path="/search"
+          exact
+          render={() => {
+            return (
+              <div className="container text-center">
+                <h2>Search for a movie</h2>
+                <InputGroup>
+                  <InputGroupAddon addonType="prepend">
+                    <Button onClick={this.handleSearch} className="py-0">
+                      <img
+                        className="p-0"
+                        width="35"
+                        height="35px"
+                        src={searchIcon}
+                        alt="search icon"
+                      />
+                    </Button>
+                  </InputGroupAddon>
+                  <Input
+                    value={this.state.searchWord}
+                    onChange={this.handleChange}
+                    placeholder="Search For A Movie"
                   />
-                </Button>
-              </InputGroupAddon>
-              <Input
-                value={this.state.searchWord}
-                onChange={this.handleChange}
-                placeholder="Search For A Movie"
-              />
-            </InputGroup>
-            <br />
-            <br />
-          </div>
-         )}}/>
-       
+                </InputGroup>
+                <br />
+                <br />
+              </div>
+            );
+          }}
+        />
 
         {/* SHOWSEARCH */}
         {this.state.isLoading && this.state.isSearching && (
@@ -167,8 +187,7 @@ export default class MainComponent extends Component {
 
         {/* SHOW COMMENTS */}
         <Route path="/moviedetails/:movieId" component={MovieDetail} />
-        
-       
+
         {/* DEFAULT HOMEPAGE */}
       </Router>
     );
